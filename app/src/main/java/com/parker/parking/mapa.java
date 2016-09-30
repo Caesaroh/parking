@@ -30,6 +30,7 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback, Google
     private GoogleMap mMap;
     private GoogleApiClient apiClient;
     private final int REQUEST_LOCATION = 1;
+    private int nMarker = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +57,9 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback, Google
     }
 
     private void nuevaUbicacion() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        mMap.clear();
 
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION);
@@ -78,11 +73,15 @@ public class Mapa extends FragmentActivity implements OnMapReadyCallback, Google
 
         LatLng randomPoint = new LatLng(lat + Math.random() / 100, lon + Math.random() / 100);
         LatLngBounds bounds = new LatLngBounds(new LatLng(lat, lon), randomPoint);
+
         mMap.addMarker(new MarkerOptions()
             .position(randomPoint)
-            .title("Cajón X")
+            .title("Cajón " + nMarker)
         );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+
+        nMarker++;
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
     }
 
     /**
